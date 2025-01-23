@@ -8,8 +8,8 @@ let gridSize = 3;
 let tiles = [];
 let gameContainer = document.getElementById("game-container");
 let puzzlePieces = document.getElementById("puzzle-pieces");
-let tileWidth = 160; // Ширина одной части пазла
-let tileHeight = 80; // Высота одной части пазла
+let tileWidth = 120; // Уменьшенная ширина одной части пазла
+let tileHeight = 60; // Уменьшенная высота одной части пазла
 let currentImageSet = 'img'; // Изначально карта Казахстана
 
 // Функция для показа кнопок уровней после выбора карты
@@ -211,7 +211,7 @@ const zoomStep = 0.1; // Шаг масштабирования
 const minScale = 0.5; // Минимальный масштаб
 const maxScale = 2; // Максимальный масштаб
 
-const zoomContainer = document.body; // Оборачиваем весь сайт
+const zoomContainer = document.getElementById("game-container"); // Ограничиваем только область игры
 
 // Масштабирование колесиком мыши
 zoomContainer.addEventListener("wheel", (e) => {
@@ -235,7 +235,7 @@ zoomContainer.addEventListener("mousedown", (e) => {
     zoomContainer.style.cursor = "grabbing";
 });
 
-zoomContainer.addEventListener("mousemove", (e) => {
+document.addEventListener("mousemove", (e) => {
     if (!isPanning) return;
 
     panX = e.clientX - startX;
@@ -243,13 +243,9 @@ zoomContainer.addEventListener("mousemove", (e) => {
     updateZoom();
 });
 
-zoomContainer.addEventListener("mouseup", () => {
+document.addEventListener("mouseup", () => {
     isPanning = false;
     zoomContainer.style.cursor = "default";
-});
-
-zoomContainer.addEventListener("mouseleave", () => {
-    isPanning = false;
 });
 
 // Перемещение на сенсорных устройствах
@@ -269,7 +265,7 @@ zoomContainer.addEventListener("touchmove", (e) => {
     updateZoom();
 });
 
-zoomContainer.addEventListener("touchend", () => {
+document.addEventListener("touchend", () => {
     isPanning = false;
 });
 
