@@ -8,8 +8,8 @@ let gridSize = 3;
 let tiles = [];
 let gameContainer = document.getElementById("game-container");
 let puzzlePieces = document.getElementById("puzzle-pieces");
-let tileWidth = window.innerWidth / 16; // Уменьшаем размер плитки еще больше
-let tileHeight = window.innerHeight / 16; // Уменьшаем размер плитки еще больше
+let tileWidth = window.innerWidth / 12 * 1.5; // Уменьшаем в 1.5 раза
+let tileHeight = window.innerHeight / 12 * 1.5; // Уменьшаем в 1.5 раза
 let currentImageSet = 'img'; // Изначально карта Казахстана
 
 // Масштаб для всего сайта
@@ -51,8 +51,8 @@ function loadLevel(level, imageSet = 'img') {
     tiles = [];
 
     // Пересчитываем размеры в зависимости от уровня
-    tileWidth = window.innerWidth / (gridSize * 3); // Для 5x5 плитки делаем еще меньше
-    tileHeight = window.innerHeight / (gridSize * 3); // Для 5x5 плитки делаем еще меньше
+    tileWidth = window.innerWidth / (gridSize * 3) * 1.5; // Уменьшаем в 1.5 раза
+    tileHeight = window.innerHeight / (gridSize * 3) * 1.5; // Уменьшаем в 1.5 раза
 
     // Настроим контейнер для пазла
     gameContainer.style.width = `${tileWidth * gridSize}px`;
