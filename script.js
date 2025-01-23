@@ -8,9 +8,34 @@ let gridSize = 3;
 let tiles = [];
 let gameContainer = document.getElementById("game-container");
 let puzzlePieces = document.getElementById("puzzle-pieces");
-let tileWidth = 120; // Уменьшенная ширина одной части пазла
-let tileHeight = 60; // Уменьшенная высота одной части пазла
+let tileWidth = window.innerWidth / 16; // Уменьшаем размер плитки еще больше
+let tileHeight = window.innerHeight / 16; // Уменьшаем размер плитки еще больше
 let currentImageSet = 'img'; // Изначально карта Казахстана
+
+// Масштаб для всего сайта
+let globalScale = 1;
+
+// Проверка устройства
+const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+// Функция для масштабирования всей страницы
+function handleGlobalZoom(event) {
+    if (isMobile) return; // Отключаем для мобильных устройств
+
+    event.preventDefault(); // Отключаем стандартное поведение прокрутки
+
+    globalScale += event.deltaY * -0.001; // Меняем масштаб в зависимости от направления прокрутки
+    globalScale = Math.min(Math.max(0.5, globalScale), 3); // Ограничиваем масштаб от 0.5 до 3
+
+    // Применяем масштаб к корневому элементу
+    document.body.style.transform = `scale(${globalScale})`;
+    document.body.style.transformOrigin = "center top";
+}
+
+// Применяем обработчик события wheel только для ПК
+if (!isMobile) {
+    window.addEventListener("wheel", handleGlobalZoom, { passive: false }); // Добавляем флаг passive: false, чтобы можно было отключить стандартное поведение
+}
 
 // Функция для показа кнопок уровней после выбора карты
 function showLevelButtons() {
@@ -24,6 +49,10 @@ function loadLevel(level, imageSet = 'img') {
     gameContainer.innerHTML = "";
     puzzlePieces.innerHTML = "";
     tiles = [];
+
+    // Пересчитываем размеры в зависимости от уровня
+    tileWidth = window.innerWidth / (gridSize * 3); // Для 5x5 плитки делаем еще меньше
+    tileHeight = window.innerHeight / (gridSize * 3); // Для 5x5 плитки делаем еще меньше
 
     // Настроим контейнер для пазла
     gameContainer.style.width = `${tileWidth * gridSize}px`;
@@ -201,76 +230,4 @@ document.getElementById("level-4x4-img1").addEventListener("click", () => loadLe
 document.getElementById("level-5x5-img1").addEventListener("click", () => loadLevel("5x5", 'img1'));
 
 // Инициализация начального уровня
-loadLevel("3x3");
-
-// === Масштабирование и перемещение ===
-
-let scale = 1; // Текущий масштаб
-let panX = 0, panY = 0; // Текущее смещение
-const zoomStep = 0.1; // Шаг масштабирования
-const minScale = 0.5; // Минимальный масштаб
-const maxScale = 2; // Максимальный масштаб
-
-const zoomContainer = document.getElementById("game-container"); // Ограничиваем только область игры
-
-// Масштабирование колесиком мыши
-zoomContainer.addEventListener("wheel", (e) => {
-    e.preventDefault();
-
-    const delta = e.deltaY > 0 ? -zoomStep : zoomStep; // Направление масштабирования
-    scale = Math.min(maxScale, Math.max(minScale, scale + delta)); // Ограничиваем масштаб
-
-    updateZoom();
-});
-
-// Перемещение
-let isPanning = false;
-let startX = 0, startY = 0;
-
-// Перемещение мышью
-zoomContainer.addEventListener("mousedown", (e) => {
-    isPanning = true;
-    startX = e.clientX - panX;
-    startY = e.clientY - panY;
-    zoomContainer.style.cursor = "grabbing";
-});
-
-document.addEventListener("mousemove", (e) => {
-    if (!isPanning) return;
-
-    panX = e.clientX - startX;
-    panY = e.clientY - startY;
-    updateZoom();
-});
-
-document.addEventListener("mouseup", () => {
-    isPanning = false;
-    zoomContainer.style.cursor = "default";
-});
-
-// Перемещение на сенсорных устройствах
-zoomContainer.addEventListener("touchstart", (e) => {
-    isPanning = true;
-    const touch = e.touches[0];
-    startX = touch.clientX - panX;
-    startY = touch.clientY - panY;
-});
-
-zoomContainer.addEventListener("touchmove", (e) => {
-    if (!isPanning) return;
-
-    const touch = e.touches[0];
-    panX = touch.clientX - startX;
-    panY = touch.clientY - startY;
-    updateZoom();
-});
-
-document.addEventListener("touchend", () => {
-    isPanning = false;
-});
-
-// Обновление трансформации
-function updateZoom() {
-    zoomContainer.style.transform = `scale(${scale}) translate(${panX / scale}px, ${panY / scale}px)`;
-    zoomContainer.style.transformOrigin = "center";
-}
+loadLevel("5x5");
